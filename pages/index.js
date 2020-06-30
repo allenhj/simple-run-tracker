@@ -1,61 +1,68 @@
+/* eslint-disable react/react-in-jsx-scope */
 import Head from 'next/head'
 
 export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Simple Run Distance Tracker</title>
         <link rel="icon" href="/favicon.ico" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;500;900&display=swap" rel="stylesheet" />
       </Head>
 
       <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+        <div className="flex">
+          <h1 className="title">
+            Simple Run Tracker
+          </h1>
+          <div className="flex-vertical">
+            <p className="subhead">
+              Target Distance
+              <span>5 miles</span>
+            </p>
+            <p className="subhead">
+              Progress
+              <span>1.5 miles, 30%</span>
+            </p>
+          </div>
+        </div>
 
         <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
 
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
 
-          <a
-            href="https://github.com/zeit/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card selected"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
+          <div className="card"><h3>0.25</h3></div>
         </div>
       </main>
 
       <footer>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://github.com/allenhj"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
+          Built by{' '}
+          <span className="logo">@allenhj</span>
         </a>
       </footer>
 
@@ -78,6 +85,35 @@ export default function Home() {
           align-items: center;
         }
 
+        .flex {
+          max-width: 1140px;
+          margin: 0 auto;
+          display: flex;
+          // height: 294px;
+          align-items: flex-end;
+          flex-wrap: wrap;
+        }
+
+        .flex > h1 {
+          flex-basis: 66%;
+        }
+
+        .flex-vertical {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-basis: 33%;
+          flex-shrink: 0;
+          flex-grow: 1;
+        }
+
+        .flex-vertical > * {
+          flex-basis: 50%;
+          display: flex;
+          align-items: flex-end;
+          margin-bottom: 1.2rem;
+        }
+
         footer {
           width: 100%;
           height: 100px;
@@ -87,8 +123,10 @@ export default function Home() {
           align-items: center;
         }
 
-        footer img {
+        footer span {
           margin-left: 0.5rem;
+          font-weight: 500;
+          color: #00c444;
         }
 
         footer a {
@@ -116,17 +154,21 @@ export default function Home() {
         .title {
           margin: 0;
           line-height: 1.15;
-          font-size: 4rem;
+          font-size: 8rem;
         }
 
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .description {
+        .subhead {
           line-height: 1.5;
           font-size: 1.5rem;
+          font-weight: 500;
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .subhead span {
+          font-size: 1rem;
+          font-weight: 300;
         }
 
         code {
@@ -139,36 +181,33 @@ export default function Home() {
         }
 
         .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(50px, 400px));
+          grid-gap: 1rem;
+          max-width: 1140px;
           margin-top: 3rem;
         }
 
         .card {
-          margin: 1rem;
           flex-basis: 45%;
-          padding: 1.5rem;
           text-align: left;
           color: inherit;
           text-decoration: none;
           border: 1px solid #eaeaea;
-          border-radius: 10px;
+          border-radius: 4px;
           transition: color 0.15s ease, border-color 0.15s ease;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
+        .selected {
+          background: #00c444;
+          color: white;
         }
 
         .card h3 {
-          margin: 0 0 1rem 0;
           font-size: 1.5rem;
         }
 
@@ -182,11 +221,61 @@ export default function Home() {
           height: 1em;
         }
 
+        @media (max-width: 1180px) {
+          .container {
+            padding: 0 2rem;
+          }
+
+          .flex {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .flex > * {
+            flex-basis: 100%;
+            width: 100%;
+          }
+
+          .flex-vertical > p {
+            width: calc(50% - 1rem);
+          }
+
+          .title {
+            margin-bottom: 4.2rem;
+            font-size: 6.2rem;
+          }
+        }
+
         @media (max-width: 600px) {
+          main {
+            padding: 2rem 0;
+          }
+
+          footer {
+            height: 80px;
+          }
+
+          .title {
+            font-size: 4rem;
+          }
+
+          .flex > h1 {
+            flex-basis: 100%;
+          }
+
+          .flex-vertical > p {
+            width: 100%;
+          }
+
           .grid {
             width: 100%;
-            flex-direction: column;
+            grid-gap: 0.25rem;
           }
+
+          .grid h3 {
+            margin: 0.5rem;
+          }
+
         }
       `}</style>
 
