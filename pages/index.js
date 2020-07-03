@@ -1,7 +1,37 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Head from 'next/head'
+import { useState } from 'react'
+
+const LENGTH_UNIT = 'miles'
+const INCREMENT_LENGTH = 0.25
+const TARGET_DISTANCE = 5
+const RUN_INCREMENTS = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]
+const COMPLETED_DISTANCE =  RUN_INCREMENTS.reduce((a, b) => a + b) * INCREMENT_LENGTH
+const PERCENT_COMPLETE = COMPLETED_DISTANCE / TARGET_DISTANCE
 
 export default function Home() {
+
+
+  const [editMode, setEditMode] = useState(false)
+  const [editIncrements, setEditIncrements] = useState(RUN_INCREMENTS)
+
+  const resetEditIncrements = () => setEditIncrements(RUN_INCREMENTS)
+  const toggleIncrement = (idx) => {
+    if (!editMode) return
+
+    const updatedIncrements = [...editIncrements]
+    updatedIncrements[idx] = Number(!editIncrements[idx])
+    setEditIncrements(updatedIncrements)
+  }
+
+  const toggleEditMode = () => {
+    if (!editMode) return setEditMode(true)
+    resetEditIncrements()
+    setEditMode(false)
+  }
+
+  const displayIncrements = editMode ? editIncrements : RUN_INCREMENTS
+
   return (
     <div className="container">
       <Head>
@@ -24,40 +54,41 @@ export default function Home() {
           <div className="flex-vertical">
             <p className="subhead">
               Target Distance
-              <span>5 miles</span>
+              <span>{`${TARGET_DISTANCE} ${LENGTH_UNIT}`}</span>
             </p>
             <p className="subhead">
               Progress
-              <span>1.5 miles, 30%</span>
+              <span>{`${COMPLETED_DISTANCE} ${LENGTH_UNIT}, ${PERCENT_COMPLETE}%`}</span>
             </p>
           </div>
         </div>
 
         <div className="grid">
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card selected"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
-          <div className="card"><h3>0.25</h3></div>
+          {displayIncrements.map((increment, idx) => {
+            const toggleSelf = () => toggleIncrement(idx)
+            let className = 'card'
+            if (editMode) className += ' edit'
+            if (editMode && increment) className += ' selected-edit'
+            if (!editMode && increment) className += ' selected'
+            return (
+              <div
+                className={className}
+                key={idx}
+                onClick={toggleSelf}
+              >
+                <h3>0.25</h3>
+              </div>
+            )
+          })}
+        </div>
+        <div className="button-container">
+          <button
+            type="button"
+            className={`edit-button${editMode ? ' edit-button-active' : ''}`}
+            onClick={toggleEditMode}
+          >
+            <h3>{`${editMode ? 'Exit ' : ''}Edit Mode`}</h3>
+          </button>
         </div>
       </main>
 
@@ -101,14 +132,14 @@ export default function Home() {
         }
 
         .flex > h1 {
-          flex-basis: 66%;
+          flex-basis: calc(75% + 1rem);
         }
 
         .flex-vertical {
           height: 100%;
           display: flex;
           flex-direction: column;
-          flex-basis: 33%;
+          // flex-basis: 25%;
           flex-shrink: 0;
           flex-grow: 1;
         }
@@ -206,11 +237,8 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: center;
-        }
 
-        .selected {
-          background: #00c444;
-          color: white;
+          transition: all 150ms ease-in-out;
         }
 
         .card h3 {
@@ -221,6 +249,38 @@ export default function Home() {
           margin: 0;
           font-size: 1.25rem;
           line-height: 1.5;
+        }
+
+        .selected {
+          background: #00c444;
+          color: white;
+        }
+
+        .selected-edit {
+          background: #99e7b4;
+          color: rbga(0,0,0,0.5)
+        }
+
+        .edit {
+          color: rbga(0,0,0,0.5)
+        }
+
+        .button-container {
+          margin-top: 3rem;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        button {
+          font-size: 1.25rem;
+          line-height: 1.5;
+          border-radius: 4px;
+          border: 1px solid #eaeaea;
+          padding: 0 3rem;
+          flex-basis: 380px;
+          flex-shrink: 0;
         }
 
         .logo {
@@ -283,8 +343,13 @@ export default function Home() {
             margin: 0.5rem;
           }
 
+          button {
+            flex-basis: 100%;
+            margin: 0.5rem;
+          }
         }
-      `}</style>
+      `}
+      </style>
 
       <style jsx global>{`
         html,
@@ -299,7 +364,8 @@ export default function Home() {
         * {
           box-sizing: border-box;
         }
-      `}</style>
+      `}
+      </style>
     </div>
   )
 }
