@@ -283,10 +283,6 @@ export default function Home() {
           flex-shrink: 0;
         }
 
-        .logo {
-          height: 1em;
-        }
-
         @media (max-width: 1180px) {
           .container {
             padding: 0 2rem;
