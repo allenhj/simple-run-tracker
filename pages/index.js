@@ -5,7 +5,7 @@ import { useState } from 'react'
 const LENGTH_UNIT = 'miles'
 const INCREMENT_LENGTH = 0.25
 const TARGET_DISTANCE = 5
-const RUN_INCREMENTS = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]
+const RUN_INCREMENTS = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
 const COMPLETED_DISTANCE =  RUN_INCREMENTS.reduce((a, b) => a + b) * INCREMENT_LENGTH
 const PERCENT_COMPLETE = COMPLETED_DISTANCE / TARGET_DISTANCE
 
@@ -84,7 +84,7 @@ export default function Home() {
         <div className="button-container">
           <button
             type="button"
-            className={`edit-button${editMode ? ' edit-button-active' : ''}`}
+            className={`${editMode ? 'button-active' : ''}`}
             onClick={toggleEditMode}
           >
             <h3>{`${editMode ? 'Exit ' : ''}Edit Mode`}</h3>
@@ -243,6 +243,14 @@ export default function Home() {
 
         .card h3 {
           font-size: 1.5rem;
+          cursor: default;
+          -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+             -khtml-user-select: none; /* Konqueror HTML */
+               -moz-user-select: none; /* Old versions of Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
         }
 
         .card p {
@@ -258,11 +266,12 @@ export default function Home() {
 
         .selected-edit {
           background: #99e7b4;
-          color: rbga(0,0,0,0.5)
+          color: rgba(0,0,0,0.5);
         }
 
         .edit {
-          color: rbga(0,0,0,0.5)
+          color: rgba(0,0,0,0.5);
+          cursor: pointer;
         }
 
         .button-container {
@@ -281,6 +290,12 @@ export default function Home() {
           padding: 0 3rem;
           flex-basis: 380px;
           flex-shrink: 0;
+          cursor: pointer;
+        }
+
+        .button-active {
+          background: #00c444;
+          color: #fff;
         }
 
         @media (max-width: 1180px) {
