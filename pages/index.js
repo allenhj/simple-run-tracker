@@ -1,21 +1,34 @@
 /* eslint-disable react/react-in-jsx-scope */
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { useState } from 'react'
 
+import pastRuns from '../utils/pastRuns'
+
+// helper functions
+const getLatestIncrements = () => pastRuns[pastRuns.length - 1].increments
+const formatDate = (isoString) => {
+  const date = new Date(isoString)
+  return `${date.getMonth()} / ${date.getDate()} / ${date.getFullYear()}`
+}
+
+// constants
 const LENGTH_UNIT = 'miles'
 const INCREMENT_LENGTH = 0.25
 const TARGET_DISTANCE = 5
-const RUN_INCREMENTS = [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]
-const COMPLETED_DISTANCE =  RUN_INCREMENTS.reduce((a, b) => a + b) * INCREMENT_LENGTH
+const COMPLETED_DISTANCE =  getLatestIncrements().reduce((a, b) => a + b) * INCREMENT_LENGTH
 const PERCENT_COMPLETE = COMPLETED_DISTANCE / TARGET_DISTANCE * 100
 
 export default function Home() {
-
-
+  // EDIT mode
   const [editMode, setEditMode] = useState(false)
-  const [editIncrements, setEditIncrements] = useState(RUN_INCREMENTS)
+  const toggleEditMode = () => {
+    if (!editMode) return setEditMode(true)
+    resetEditIncrements()
+    setEditMode(false)
+  }
 
-  const resetEditIncrements = () => setEditIncrements(RUN_INCREMENTS)
+  const [editIncrements, setEditIncrements] = useState(getLatestIncrements())
+  const resetEditIncrements = () => setEditIncrements(getLatestIncrements())
   const toggleIncrement = (idx) => {
     if (!editMode) return
 
@@ -24,13 +37,42 @@ export default function Home() {
     setEditIncrements(updatedIncrements)
   }
 
-  const toggleEditMode = () => {
-    if (!editMode) return setEditMode(true)
-    resetEditIncrements()
-    setEditMode(false)
+  // HISTORY playback mode
+  const [historyMode, setHistoryMode] = useState(false)
+  const toggleHistoryMode = () => {
+    setHistoryMode(!historyMode)
   }
 
-  const displayIncrements = editMode ? editIncrements : RUN_INCREMENTS
+  const [historyIncrements, setHistoryIncrements] = useState(pastRuns[0].increments)
+  const [historyDate, setHistoryDate] = useState(formatDate(pastRuns[0].date))
+  useEffect(() => {
+    if (historyMode) {
+      // play history when historyMode has been toggled on
+      let limit = pastRuns.length
+      let count = 0
+      const playHistory = async () => {
+        while (count < limit) {
+          setHistoryIncrements(pastRuns[count].increments)
+          setHistoryDate(formatDate(pastRuns[count].date))
+          await new Promise(resolve => setTimeout(resolve, 750))
+          count += 1
+        }
+        // cleanup
+        setHistoryMode(false)
+        setHistoryIncrements(pastRuns[0].increments)
+        setHistoryDate(formatDate(pastRuns[0].date))
+      }
+      playHistory()
+    }
+  }, [historyMode])
+
+  // Select increments to display
+  const getIncrements = () => {
+    if (historyMode) return historyIncrements
+    if (editMode) return editIncrements
+    return getLatestIncrements()
+  }
+  const displayIncrements = getIncrements()
 
   return (
     <div className="container">
@@ -68,8 +110,9 @@ export default function Home() {
             const toggleSelf = () => toggleIncrement(idx)
             let className = 'card'
             if (editMode) className += ' edit'
-            if (editMode && increment) className += ' selected-edit'
+            if (editMode && increment) className += ' edit-selected'
             if (!editMode && increment) className += ' selected'
+            if (historyMode && increment) className += ' history-selected'
             return (
               <div
                 className={className}
@@ -84,10 +127,19 @@ export default function Home() {
         <div className="button-container">
           <button
             type="button"
-            className={`${editMode ? 'button-active' : ''}`}
+            className={`${editMode ? 'button-active' : ''}` + `${historyMode ? ' button-shrink' : ''}`}
             onClick={toggleEditMode}
           >
             <h3>{`${editMode ? 'Exit ' : ''}Edit Mode`}</h3>
+          </button>
+          <div className="button-spacer" />
+          <button
+            type="button"
+            className={`${historyMode ? 'button-active-secondary' : ''}`}
+            disabled={historyMode}
+            onClick={toggleHistoryMode}
+          >
+            <h3>{historyMode ? historyDate : 'History Mode'}</h3>
           </button>
         </div>
       </main>
@@ -264,7 +316,7 @@ export default function Home() {
           color: white;
         }
 
-        .selected-edit {
+        .edit-selected {
           background: #99e7b4;
           color: rgba(0,0,0,0.5);
         }
@@ -272,6 +324,11 @@ export default function Home() {
         .edit {
           color: rgba(0,0,0,0.5);
           cursor: pointer;
+        }
+
+        .history-selected {
+          background: #fcbf49;
+          color: #000000;
         }
 
         .button-container {
@@ -288,14 +345,33 @@ export default function Home() {
           border-radius: 4px;
           border: 1px solid #eaeaea;
           padding: 0 3rem;
-          flex-basis: 380px;
+          // width: 380px;
+          width: calc(50% - 0.5rem);
           flex-shrink: 0;
           cursor: pointer;
+          transition: all 250ms ease-in-out;
+          overflow: hidden;
         }
 
         .button-active {
           background: #00c444;
           color: #fff;
+        }
+
+        .button-active-secondary {
+          background: #fcbf49;
+          color: #000000;
+        }
+
+        .button-shrink {
+          width: 0;
+          height: 0;
+          padding: 0;
+          border: none;
+        }
+
+        .button-spacer {
+          width: 1rem;
         }
 
         @media (max-width: 1180px) {
