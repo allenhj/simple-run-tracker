@@ -405,6 +405,10 @@ export default function Home() {
             padding: 2rem 0;
           }
 
+          .container {
+            padding: 0 1rem;
+          }
+
           footer {
             height: 80px;
           }
@@ -428,10 +432,19 @@ export default function Home() {
 
           .grid h3 {
             margin: 0.5rem;
+            font-size: 1.25rem;
+          }
+
+          button h3 {
+            margin: 0.5rem;
+          }
+
+          .button-container {
+            flex-direction: column;
           }
 
           button {
-            flex-basis: 100%;
+            width: 100%;
             margin: 0.5rem;
           }
         }
